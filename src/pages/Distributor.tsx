@@ -29,6 +29,8 @@ import {
 import { Truck, Users, AlertCircle, RefreshCw } from "lucide-react";
 import { Loader2 as Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCallback, useEffect } from "react";
+import { toast } from "sonner";
 
 const Distributor = () => {
   const {
@@ -50,9 +52,70 @@ const Distributor = () => {
     updateMutation.mutate();
   };
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     refetchTransport();
-  };
+  }, [refetchTransport]);
+
+  useEffect(() => {
+    if (transportError || performanceError) {
+      if (transportError) {
+        toast.error("Erro ao carregar dados de transporte!", {
+          unstyled: true,
+          action: {
+            label: (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-white bg-accent-foreground"
+              >
+                Reiniciar
+              </Button>
+            ),
+            onClick: handleRetry,
+          },
+          style: {
+            maxWidth: "500px",
+            width: "100%",
+            padding: "10px",
+            borderRadius: "8px",
+            backgroundColor: "var(--destructive)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          },
+          className: "bg-destructive text-white",
+        });
+      }
+      if (performanceError) {
+        toast.error("Erro ao carregar dados de transporte. Tente novamente.", {
+          unstyled: true,
+          action: {
+            label: (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-white bg-accent-foreground"
+              >
+                Reiniciar
+              </Button>
+            ),
+            onClick: handleRetry,
+          },
+          style: {
+            maxWidth: "400px",
+            width: "100%",
+            padding: "10px",
+            borderRadius: "8px",
+            backgroundColor: "var(--destructive)",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          },
+          className: "bg-destructive text-white",
+        });
+      }
+    }
+  }, [handleRetry, performanceError, refetchTransport, transportError]);
 
   const isLoading =
     updateMutation.isPending || performanceLoading || transportLoading;

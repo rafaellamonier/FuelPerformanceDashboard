@@ -24,7 +24,7 @@ export interface DriverPerformance {
 // Simulated API delays
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// 🔁 Dados mutáveis em memória
+// Dados mutáveis em memória
 let fuelVolumeData: FuelData[] = [
   { day: "Segunda", volume: 1250 },
   { day: "Terça", volume: 1100 },
@@ -80,7 +80,7 @@ export const fetchVehicleTransportData = async (): Promise<
   await delay(1000);
 
   // Simulate occasional error
-  if (Math.random() < 0.2) {
+  if (Math.random() < 0.9) {
     throw new Error("Erro na conexão com o servidor");
   }
 
@@ -96,7 +96,7 @@ export const fetchDriverPerformance = async (): Promise<
 
 // Mock mutation function que altera os dados
 export const updateFuelData = async (): Promise<void> => {
-  await delay(1200);
+  await delay(1000);
 
   // Altera aleatoriamente os volumes em até 10%
   fuelVolumeData = fuelVolumeData.map((item) => ({
@@ -124,7 +124,7 @@ export const updateFuelData = async (): Promise<void> => {
 };
 
 export const updateDistributorData = async (): Promise<void> => {
-  await delay(1200);
+  await delay(1000);
 
   // Simula a atualização dos dados de transporte de veículos
   vhehicleTransportData.forEach((item) => {
