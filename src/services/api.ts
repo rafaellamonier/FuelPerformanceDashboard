@@ -1,93 +1,147 @@
 // Mock API data for demonstration
 export interface FuelData {
-	day: string;
-	volume: number;
+  day: string;
+  volume: number;
 }
 
 export interface FuelTypeData {
-	type: string;
-	percentage: number;
-	volume: number;
+  type: string;
+  percentage: number;
+  volume: number;
 }
 
 export interface VehicleTransportData {
-	month: string;
-	vehicles: number;
+  month: string;
+  vehicles: number;
 }
 
 export interface DriverPerformance {
-	criteria: string;
-	score: number;
-	maxScore: number;
+  criteria: string;
+  score: number;
+  maxScore: number;
 }
 
 // Simulated API delays
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// 🔁 Dados mutáveis em memória
+let fuelVolumeData: FuelData[] = [
+  { day: "Segunda", volume: 1250 },
+  { day: "Terça", volume: 1100 },
+  { day: "Quarta", volume: 1400 },
+  { day: "Quinta", volume: 980 },
+  { day: "Sexta", volume: 1650 },
+  { day: "Sábado", volume: 1850 },
+  { day: "Domingo", volume: 1320 },
+];
+
+let fuelTypeDistribution: FuelTypeData[] = [
+  { type: "Gasolina", percentage: 45, volume: 4500 },
+  { type: "Etanol", percentage: 30, volume: 3000 },
+  { type: "Diesel", percentage: 25, volume: 2500 },
+];
+
+const vhehicleTransportData: VehicleTransportData[] = [
+  { month: "Jan", vehicles: 145 },
+  { month: "Fev", vehicles: 132 },
+  { month: "Mar", vehicles: 178 },
+  { month: "Abr", vehicles: 156 },
+  { month: "Mai", vehicles: 189 },
+  { month: "Jun", vehicles: 167 },
+  { month: "Jul", vehicles: 195 },
+  { month: "Ago", vehicles: 203 },
+  { month: "Set", vehicles: 178 },
+  { month: "Out", vehicles: 187 },
+  { month: "Nov", vehicles: 165 },
+  { month: "Dez", vehicles: 142 },
+];
+
+const driverPerformance: DriverPerformance[] = [
+  { criteria: "Pontualidade", score: 85, maxScore: 100 },
+  { criteria: "Segurança", score: 92, maxScore: 100 },
+  { criteria: "Avaliação Cliente", score: 78, maxScore: 100 },
+  { criteria: "Eficiência Combustível", score: 88, maxScore: 100 },
+  { criteria: "Cuidado com Veículos", score: 95, maxScore: 100 },
+];
+
 export const fetchFuelVolumeByDay = async (): Promise<FuelData[]> => {
-	await delay(800);
-	return [
-		{ day: "Segunda", volume: 1250 },
-		{ day: "Terça", volume: 1100 },
-		{ day: "Quarta", volume: 1400 },
-		{ day: "Quinta", volume: 980 },
-		{ day: "Sexta", volume: 1650 },
-		{ day: "Sábado", volume: 1850 },
-		{ day: "Domingo", volume: 1320 },
-	];
+  await delay(800);
+  return fuelVolumeData;
 };
 
 export const fetchFuelTypeDistribution = async (): Promise<FuelTypeData[]> => {
-	await delay(600);
-	return [
-		{ type: "Gasolina", percentage: 45, volume: 4500 },
-		{ type: "Etanol", percentage: 30, volume: 3000 },
-		{ type: "Diesel", percentage: 25, volume: 2500 },
-	];
+  await delay(600);
+  return fuelTypeDistribution;
 };
 
 export const fetchVehicleTransportData = async (): Promise<
-	VehicleTransportData[]
+  VehicleTransportData[]
 > => {
-	await delay(1000);
+  await delay(1000);
 
-	// Simulate occasional error
-	if (Math.random() < 0.2) {
-		throw new Error("Erro na conexão com o servidor");
-	}
+  // Simulate occasional error
+  console.log("teste Math.random:", Math.random());
+  if (Math.random() < 0.2) {
+    throw new Error("Erro na conexão com o servidor");
+  }
 
-	return [
-		{ month: "Jan", vehicles: 145 },
-		{ month: "Fev", vehicles: 132 },
-		{ month: "Mar", vehicles: 178 },
-		{ month: "Abr", vehicles: 156 },
-		{ month: "Mai", vehicles: 189 },
-		{ month: "Jun", vehicles: 167 },
-		{ month: "Jul", vehicles: 195 },
-		{ month: "Ago", vehicles: 203 },
-		{ month: "Set", vehicles: 178 },
-		{ month: "Out", vehicles: 187 },
-		{ month: "Nov", vehicles: 165 },
-		{ month: "Dez", vehicles: 142 },
-	];
+  return vhehicleTransportData;
 };
 
 export const fetchDriverPerformance = async (): Promise<
-	DriverPerformance[]
+  DriverPerformance[]
 > => {
-	await delay(700);
-	return [
-		{ criteria: "Pontualidade", score: 85, maxScore: 100 },
-		{ criteria: "Segurança", score: 92, maxScore: 100 },
-		{ criteria: "Avaliação Cliente", score: 78, maxScore: 100 },
-		{ criteria: "Eficiência Combustível", score: 88, maxScore: 100 },
-		{ criteria: "Cuidado com Veículos", score: 95, maxScore: 100 },
-	];
+  await delay(700);
+  return driverPerformance;
 };
 
-// Mock mutation function
+// Mock mutation function que altera os dados
 export const updateFuelData = async (): Promise<void> => {
-	await delay(1200);
-	// Simulate mutation success
-	console.log("Dados atualizados com sucesso!");
+  await delay(1200);
+
+  // Altera aleatoriamente os volumes em até 10%
+  fuelVolumeData = fuelVolumeData.map((item) => ({
+    ...item,
+    volume: Math.round(item.volume * (0.9 + Math.random() * 0.2)), // entre -10% e +10%
+  }));
+
+  fuelTypeDistribution = fuelTypeDistribution.map((item) => {
+    const newVolume = Math.round(item.volume * (0.9 + Math.random() * 0.2));
+    return {
+      ...item,
+      volume: newVolume,
+    };
+  });
+
+  const totalTypeVolume = fuelTypeDistribution.reduce(
+    (sum, item) => sum + item.volume,
+    0,
+  );
+
+  fuelTypeDistribution = fuelTypeDistribution.map((item) => ({
+    ...item,
+    percentage: Math.round((item.volume / totalTypeVolume) * 100),
+  }));
+
+  console.log("Dados de combustível atualizados com sucesso!");
+};
+
+export const updateDistributorData = async (): Promise<void> => {
+  await delay(1200);
+
+  // Simula a atualização dos dados de transporte de veículos
+  vhehicleTransportData.forEach((item) => {
+    item.vehicles = Math.round(item.vehicles * (0.9 + Math.random() * 0.2)); // entre -10% e +10%
+  });
+
+  // Simula a atualização do desempenho dos motoristas
+  driverPerformance.forEach((item) => {
+    item.score = Math.round(
+      item.score * (0.9 + Math.random() * 0.2), // entre -10% e +10%
+    );
+    item.maxScore = 100; // Mantém o máximo fixo
+  });
+
+  // Log para simular sucesso na atualização
+  console.log("Dados de combustível atualizados com sucesso!");
 };
