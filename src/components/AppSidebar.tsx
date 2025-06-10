@@ -1,5 +1,5 @@
 import { Fuel, Truck, Home } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
 	Sidebar,
 	SidebarContent,
@@ -20,8 +20,6 @@ const items = [
 
 export function AppSidebar() {
 	const { state } = useSidebar();
-	const location = useLocation();
-	const currentPath = location.pathname;
 
 	const getNavCls = ({ isActive }: { isActive: boolean }) => 
 		isActive
