@@ -94,7 +94,7 @@ const GasStation = () => {
 				<Button
 					onClick={handleUpdateData}
 					disabled={updateMutation.isPending}
-					className="flex items-center gap-2"
+					className="flex items-center gap-2 cursor-pointer"
 				>
 					{updateMutation.isPending ? (
 						<Loader2 className="h-4 w-4 animate-spin" />
@@ -130,16 +130,16 @@ const GasStation = () => {
 										<YAxis />
 										<Tooltip
 											formatter={(value) => [`${value}L`, "Volume"]}
-											labelStyle={{ color: "hsl(var(--foreground))" }}
+											labelStyle={{ color: "var(--foreground)" }}
 											contentStyle={{
-												backgroundColor: "hsl(var(--background))",
-												border: "1px solid hsl(var(--border))",
+												backgroundColor: "var(--background)",
+												border: "1px solid var(--border)",
 												borderRadius: "6px",
 											}}
 										/>
 										<Bar
 											dataKey="volume"
-											fill="hsl(var(--primary))"
+											fill="var(--primary)"
 											radius={[4, 4, 0, 0]}
 										/>
 									</BarChart>
@@ -189,8 +189,8 @@ const GasStation = () => {
 											formatter={(value) => [`${value}%`, "Porcentagem"]}
 											labelFormatter={(label) => `Combustível: ${label}`}
 											contentStyle={{
-												backgroundColor: "hsl(var(--background))",
-												border: "1px solid hsl(var(--border))",
+												backgroundColor: "var(--background)",
+												border: "1px solid var(--border)",
 												borderRadius: "6px",
 											}}
 										/>

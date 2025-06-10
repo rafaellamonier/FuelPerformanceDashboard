@@ -31,7 +31,7 @@ const App = () => (
 							<header className="h-16 border-b bg-card flex items-center px-6 shadow-sm">
 								<SidebarTrigger className="mr-4" />
 								<h1 className="text-xl font-semibold text-foreground">
-									Painel Analítico - Posto & Distributor
+									Painel Analítico - Posto & Distribuidora
 								</h1>
 							</header>
 							<main className="flex-1 p-6">

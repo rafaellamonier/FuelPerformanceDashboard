@@ -52,6 +52,8 @@ const Distributor = () => {
 		refetchTransport();
 	};
 
+	const dotStyle = { stroke: '#8884d8' };
+
 	return (
 		<div className="space-y-6">
 			<div className="space-y-1">
@@ -104,26 +106,26 @@ const Distributor = () => {
 										<YAxis />
 										<Tooltip
 											formatter={(value) => [`${value}`, "Veículos"]}
-											labelStyle={{ color: "hsl(var(--foreground))" }}
+											labelStyle={{ color: "var(--foreground)" }}
 											contentStyle={{
-												backgroundColor: "hsl(var(--background))",
-												border: "1px solid hsl(var(--border))",
+												backgroundColor: "var(--background)",
+												border: "1px solid var(--border)",
 												borderRadius: "6px",
 											}}
 										/>
 										<Line
 											type="monotone"
 											dataKey="vehicles"
-											stroke="hsl(var(--primary))"
+											stroke="var(--primary)"
 											strokeWidth={3}
 											dot={{
-												fill: "hsl(var(--primary))",
+												fill: "var(--primary)",
 												strokeWidth: 2,
 												r: 4,
 											}}
 											activeDot={{
 												r: 6,
-												stroke: "hsl(var(--primary))",
+												stroke: "var(--primary)",
 												strokeWidth: 2,
 											}}
 										/>
@@ -172,10 +174,10 @@ const Distributor = () => {
 										/>
 										<Tooltip
 											formatter={(value) => [`${value}/100`, "Pontuação"]}
-											labelStyle={{ color: "hsl(var(--foreground))" }}
+											labelStyle={{ color: "var(--foreground)" }}
 											contentStyle={{
-												backgroundColor: "hsl(var(--background))",
-												border: "1px solid hsl(var(--border))",
+												backgroundColor: "var(--background)",
+												border: "1px solid var(--border)",
 												borderRadius: "6px",
 											}}
 										/>
