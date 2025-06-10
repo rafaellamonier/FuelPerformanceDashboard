@@ -57,8 +57,6 @@ const Distributor = () => {
   const isLoading =
     updateMutation.isPending || performanceLoading || transportLoading;
 
-  console.log("Transport updateMutation.isPending:", updateMutation.isPending);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

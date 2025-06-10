@@ -80,7 +80,6 @@ export const fetchVehicleTransportData = async (): Promise<
   await delay(1000);
 
   // Simulate occasional error
-  console.log("teste Math.random:", Math.random());
   if (Math.random() < 0.2) {
     throw new Error("Erro na conexão com o servidor");
   }
@@ -122,8 +121,6 @@ export const updateFuelData = async (): Promise<void> => {
     ...item,
     percentage: Math.round((item.volume / totalTypeVolume) * 100),
   }));
-
-  console.log("Dados de combustível atualizados com sucesso!");
 };
 
 export const updateDistributorData = async (): Promise<void> => {
