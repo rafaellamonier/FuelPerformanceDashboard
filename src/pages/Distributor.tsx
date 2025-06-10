@@ -122,13 +122,13 @@ const Distributor = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex gap-4 items-center justify-between flex-col md:flex-row">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <h1 className="text-2xl font-bold flex items-center gap-2 md:text-3xl text-center md:text-left justify-center md:justify-start">
             <Truck className="h-8 w-8 text-primary" />
             Dashboard da Distribuidora
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-center md:text-left">
             Monitoramento de transporte de veículos e performance de motoristas
           </p>
         </div>

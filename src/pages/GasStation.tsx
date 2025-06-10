@@ -64,11 +64,11 @@ const GasStation = () => {
     <div className="space-y-6">
       <div className="flex gap-4 items-center justify-between flex-col md:flex-row">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold flex items-center gap-2 md:text-3xl">
+          <h1 className="text-2xl font-bold flex items-center justify-center gap-2 md:text-3xl text-center md:text-left md:justify-start">
             <Fuel className="h-8 w-8 text-xl md:text-primary" />
             Dashboard do Posto
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-center md:text-left">
             Análise de abastecimento e distribuição de combustíveis
           </p>
         </div>
