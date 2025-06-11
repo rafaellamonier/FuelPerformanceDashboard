@@ -64,29 +64,86 @@ const driverPerformance: DriverPerformance[] = [
   { criteria: "Cuidado com Veículos", score: 95, maxScore: 100 },
 ];
 
-export const fetchFuelVolumeByDay = async (): Promise<FuelData[]> => {
+export const fetchFuelVolumeByDay = async (
+  startDate?: Date | null,
+  endDate?: Date | null,
+  posto?: string | null,
+): Promise<FuelData[]> => {
   await delay(800);
 
-  return fuelVolumeData;
-};
-
-export const fetchFuelTypeDistribution = async (p0: {
-  start: Date | null;
-  end: Date | null;
-}): Promise<FuelTypeData[]> => {
-  await delay(600);
+  let filteredData = [...fuelVolumeData];
 
   // Se houver filtro de data, simular dados filtrados
-  if (p0.start || p0.end) {
+  if (startDate || endDate) {
+    filteredData = filteredData.map((item) => ({
+      ...item,
+      volume: Math.floor(item.volume * (0.7 + Math.random() * 0.6)),
+    }));
+  }
+
+  // Se houver filtro por posto, simular dados diferentes
+  if (posto) {
+    const postoMultiplier = posto.includes("centro")
+      ? 1.2
+      : posto.includes("IV")
+        ? 0.8
+        : posto.includes("V")
+          ? 1.1
+          : posto.includes("VI")
+            ? 0.9
+            : 1.0;
+
+    filteredData = filteredData.map((item) => ({
+      ...item,
+      volume: Math.floor(item.volume * postoMultiplier),
+    }));
+  }
+
+  return filteredData;
+};
+
+export const fetchFuelTypeDistribution = async (
+  startDate?: Date | null,
+  endDate?: Date | null,
+  posto?: string | null,
+): Promise<FuelTypeData[]> => {
+  await delay(600);
+
+  let filteredData = [...fuelTypeDistribution];
+
+  // Se houver filtro de data, simular dados filtrados
+  if (startDate || endDate) {
     const multiplier = 0.8 + Math.random() * 0.4;
-    return fuelTypeDistribution.map((item) => ({
+    filteredData = filteredData.map((item) => ({
       ...item,
       volume: Math.floor(item.volume * multiplier),
       percentage: Math.round(item.percentage * multiplier),
     }));
   }
 
-  return fuelTypeDistribution;
+  // Se houver filtro por posto, simular variação nos tipos de combustível
+  if (posto) {
+    if (posto.includes("IV")) {
+      // IV tem mais gasolina
+      filteredData[0].percentage = 55;
+      filteredData[1].percentage = 25;
+      filteredData[2].percentage = 20;
+    } else if (posto.includes("V")) {
+      // V tem mais diesel
+      filteredData[0].percentage = 35;
+      filteredData[1].percentage = 25;
+      filteredData[2].percentage = 40;
+    }
+
+    // Recalcular volumes baseado nas novas porcentagens
+    const total = filteredData.reduce((sum, item) => sum + item.volume, 0);
+    filteredData = filteredData.map((item) => ({
+      ...item,
+      volume: Math.floor((total * item.percentage) / 100),
+    }));
+  }
+
+  return filteredData;
 };
 
 export const fetchVehicleTransportData = async (p0: {

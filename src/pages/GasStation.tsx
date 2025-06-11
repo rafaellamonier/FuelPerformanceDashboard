@@ -71,21 +71,23 @@ const GasStation = () => {
     end: null,
   });
 
+  const [selectedPosto, setSelectedPosto] = useState<string | null>(null);
+
+  const start = dateRange.start || null;
+  const end = dateRange.end || null;
+
   const updateMutation = useUpdateFuelData();
   const {
     data: volumeData,
     isLoading: volumeLoading,
     error: volumeError,
-  } = useFuelVolumeByDay();
-
-  const start = dateRange.start || null;
-  const end = dateRange.end || null;
+  } = useFuelVolumeByDay(start, end, selectedPosto);
 
   const {
     data: typeData,
     isLoading: typeLoading,
     error: typeError,
-  } = useFuelTypeDistribution(start, end);
+  } = useFuelTypeDistribution(start, end, selectedPosto);
 
   const handleUpdateData = () => {
     updateMutation.mutate();
@@ -113,6 +115,10 @@ const GasStation = () => {
     setDateRange({ start: startDate, end: endDate });
   };
 
+  const handlePostoChange = (posto: string | null) => {
+    setSelectedPosto(posto);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex gap-4 items-center justify-between flex-col md:flex-row">
@@ -126,7 +132,10 @@ const GasStation = () => {
           </p>
         </div>
         <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
-          <PostoFilter onPostoChange={(posto) => console.log(posto)} />
+          <PostoFilter
+            onPostoChange={handlePostoChange}
+            className="rounded-lg p-4 bg-card"
+          />{" "}
           <Button
             onClick={handleUpdateData}
             disabled={updateMutation.isPending}

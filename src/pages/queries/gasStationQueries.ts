@@ -6,16 +6,26 @@ import {
 } from "@/services/api";
 import { toast } from "sonner";
 
-export const useFuelVolumeByDay = () =>
+export const useFuelVolumeByDay = (
+  start: Date | null,
+  end: Date | null,
+  posto: string | null,
+) =>
   useQuery({
-    queryKey: ["fuel-volume-by-day"],
-    queryFn: fetchFuelVolumeByDay,
+    queryKey: ["fuel-volume-by-day", start, end, posto],
+    queryFn: () =>
+      fetchFuelVolumeByDay({ start: start, end: end, posto: posto }),
   });
 
-export const useFuelTypeDistribution = (start: Date | null, end: Date | null) =>
+export const useFuelTypeDistribution = (
+  start: Date | null,
+  end: Date | null,
+  posto: string | null,
+) =>
   useQuery({
-    queryKey: ["fuel-type-distribution", start, end],
-    queryFn: () => fetchFuelTypeDistribution({ start, end }),
+    queryKey: ["fuel-type-distribution", start, end, posto],
+    queryFn: () =>
+      fetchFuelTypeDistribution({ start: start, end: end, posto: posto }),
   });
 
 export const useUpdateFuelData = () => {
