@@ -28,6 +28,7 @@ import {
 import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PostoFilter } from "@/components/GasStationFilter";
 
 function BarChartSkeleton() {
   return (
@@ -118,24 +119,27 @@ const GasStation = () => {
         <div className="space-y-1">
           <h1 className="text-2xl font-bold flex items-center justify-center gap-2 md:text-3xl text-center md:text-left md:justify-start">
             <Fuel className="h-8 w-8 text-xl md:text-primary" />
-            Dashboard do Posto
+            Painel do Posto
           </h1>
           <p className="text-muted-foreground text-center md:text-left">
             Análise de abastecimento e distribuição de combustíveis
           </p>
         </div>
-        <Button
-          onClick={handleUpdateData}
-          disabled={updateMutation.isPending}
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          {isLoading ? (
-            <Loader className="h-4 w-4 animate-spin" />
-          ) : (
-            <RefreshCw className="h-4 w-4" />
-          )}
-          Atualizar Dados
-        </Button>
+        <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
+          <PostoFilter onPostoChange={(posto) => console.log(posto)} />
+          <Button
+            onClick={handleUpdateData}
+            disabled={updateMutation.isPending}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            {isLoading ? (
+              <Loader className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            Atualizar Dados
+          </Button>
+        </div>
       </div>
 
       <DateRangeFilter

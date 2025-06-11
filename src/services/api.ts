@@ -66,6 +66,7 @@ const driverPerformance: DriverPerformance[] = [
 
 export const fetchFuelVolumeByDay = async (): Promise<FuelData[]> => {
   await delay(800);
+
   return fuelVolumeData;
 };
 
