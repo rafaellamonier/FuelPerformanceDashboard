@@ -29,6 +29,7 @@ import { DateRangeFilter } from "@/components/DateRangeFilter";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PostoFilter } from "@/components/GasStationFilter";
+import { ExportButton } from "@/components/ExportButton";
 
 function BarChartSkeleton() {
   return (
@@ -132,10 +133,15 @@ const GasStation = () => {
           </p>
         </div>
         <div className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
+          <ExportButton
+            data={volumeData ?? []}
+            filename="volume_abastecido"
+            className="flex items-center gap-2 cursor-pointer"
+          />
           <PostoFilter
             onPostoChange={handlePostoChange}
             className="rounded-lg p-4 bg-card"
-          />{" "}
+          />
           <Button
             onClick={handleUpdateData}
             disabled={updateMutation.isPending}

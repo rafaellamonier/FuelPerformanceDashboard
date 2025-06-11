@@ -6,6 +6,7 @@
 * Recharts: [https://recharts.org/en-US](https://recharts.org/en-US)
 * React Router: [https://reactrouter.com/](https://reactrouter.com/)
 * TanStack: [https://tanstack.com/](https://tanstack.com/)
+* XLSX: [https://www.npmjs.com/package/xlsx](https://www.npmjs.com/package/xlsx)
 
 ---
 
