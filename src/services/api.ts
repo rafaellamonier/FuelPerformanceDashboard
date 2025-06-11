@@ -69,14 +69,29 @@ export const fetchFuelVolumeByDay = async (): Promise<FuelData[]> => {
   return fuelVolumeData;
 };
 
-export const fetchFuelTypeDistribution = async (): Promise<FuelTypeData[]> => {
+export const fetchFuelTypeDistribution = async (p0: {
+  start: Date | null;
+  end: Date | null;
+}): Promise<FuelTypeData[]> => {
   await delay(600);
+
+  // Se houver filtro de data, simular dados filtrados
+  if (p0.start || p0.end) {
+    const multiplier = 0.8 + Math.random() * 0.4;
+    return fuelTypeDistribution.map((item) => ({
+      ...item,
+      volume: Math.floor(item.volume * multiplier),
+      percentage: Math.round(item.percentage * multiplier),
+    }));
+  }
+
   return fuelTypeDistribution;
 };
 
-export const fetchVehicleTransportData = async (): Promise<
-  VehicleTransportData[]
-> => {
+export const fetchVehicleTransportData = async (p0: {
+  start: Date | null;
+  end: Date | null;
+}): Promise<VehicleTransportData[]> => {
   await delay(1000);
 
   // Simulate occasional error
@@ -84,13 +99,34 @@ export const fetchVehicleTransportData = async (): Promise<
     throw new Error("Erro na conexão com o servidor");
   }
 
+  // Se houver filtro de data, simular dados filtrados
+  if (p0.start || p0.end) {
+    const multiplier = 0.8 + Math.random() * 0.4;
+    return vhehicleTransportData.map((item) => ({
+      ...item,
+      vehicles: Math.floor(item.vehicles * multiplier),
+    }));
+  }
+
   return vhehicleTransportData;
 };
 
-export const fetchDriverPerformance = async (): Promise<
-  DriverPerformance[]
-> => {
+export const fetchDriverPerformance = async (p0: {
+  start: unknown;
+  end: unknown;
+}): Promise<DriverPerformance[]> => {
   await delay(700);
+
+  // Se houver filtro de data, simular dados filtrados
+  if (p0.start || p0.end) {
+    const multiplier = 0.8 + Math.random() * 0.4;
+    return driverPerformance.map((item) => ({
+      ...item,
+      score: Math.floor(item.score * multiplier),
+      maxScore: Math.round(item.maxScore * multiplier),
+    }));
+  }
+
   return driverPerformance;
 };
 

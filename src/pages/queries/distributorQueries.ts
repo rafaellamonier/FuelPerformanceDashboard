@@ -7,18 +7,18 @@ import {
 } from "@/services/api";
 import { toast } from "sonner";
 
-export function useVehicleTransportData() {
+export function useVehicleTransportData(start: Date | null, end: Date | null) {
   return useQuery({
-    queryKey: ["vehicle-transport-data"],
-    queryFn: fetchVehicleTransportData,
+    queryKey: ["vehicle-transport-data", start, end],
+    queryFn: () => fetchVehicleTransportData({ start, end }),
     retry: 2,
   });
 }
 
-export function useDriverPerformance() {
+export function useDriverPerformance(start: Date | null, end: Date | null) {
   return useQuery({
-    queryKey: ["driver-performance"],
-    queryFn: fetchDriverPerformance,
+    queryKey: ["driver-performance", start, end],
+    queryFn: () => fetchDriverPerformance({ start, end }),
     retry: 2,
   });
 }

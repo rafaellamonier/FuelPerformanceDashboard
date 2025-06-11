@@ -29,22 +29,79 @@ import {
 import { Truck, Users, AlertCircle, RefreshCw } from "lucide-react";
 import { Loader2 as Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCallback, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function RadarChartSkeleton() {
+  return (
+    <div className="w-full max-w-md p-4 rounded-xl bg-white space-y-6">
+      {/* Radar chart simulado */}
+      <div className="flex justify-center">
+        <div className="relative w-48 h-48">
+          {/* Círculo externo simulando o gráfico */}
+          <Skeleton className="w-full h-full rounded-full absolute" />
+
+          {/* Linhas em estrela (simples, decorativo) */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-full h-px bg-muted/50 rotate-0 absolute" />
+            <div className="w-full h-px bg-muted/50 rotate-60 absolute" />
+            <div className="w-full h-px bg-muted/50 rotate-120 absolute" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LineChartSkeleton() {
+  return (
+    <div className="w-full max-w-xl p-4 rounded-xl bg-white space-y-6">
+      {/* Área do gráfico */}
+      <div className="relative h-56 w-full bg-muted/30 rounded-md overflow-hidden">
+        {/* Linha simulada */}
+        <svg className="absolute inset-0 w-full h-full">
+          <polyline
+            points="0,150 50,120 100,100 150,80 200,60 250,80 300,110 350,140 400,150"
+            fill="none"
+            stroke="#e5e7eb"
+            strokeWidth="3"
+          />
+        </svg>
+      </div>
+
+      {/* Eixo X simulado */}
+      <div className="flex justify-between px-2">
+        {[...Array(6)].map((_, i) => (
+          <Skeleton key={i} className="h-3 w-8" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const Distributor = () => {
+  const [dateRange, setDateRange] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({
+    start: null,
+    end: null,
+  });
+
   const {
     data: transportData,
     isLoading: transportLoading,
     error: transportError,
     refetch: refetchTransport,
-  } = useVehicleTransportData();
+  } = useVehicleTransportData(dateRange.start, dateRange.end);
 
   const {
     data: performanceData,
     isLoading: performanceLoading,
     error: performanceError,
-  } = useDriverPerformance();
+  } = useDriverPerformance(dateRange.start, dateRange.end);
 
   const updateMutation = useUpdateDistributorData();
 
@@ -52,9 +109,9 @@ const Distributor = () => {
     updateMutation.mutate();
   };
 
-  const handleRetry = useCallback(() => {
+  const handleRetry = () => {
     refetchTransport();
-  }, [refetchTransport]);
+  };
 
   useEffect(() => {
     if (transportError || performanceError) {
@@ -115,10 +172,18 @@ const Distributor = () => {
         });
       }
     }
-  }, [handleRetry, performanceError, refetchTransport, transportError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [performanceError, transportError]);
 
   const isLoading =
     updateMutation.isPending || performanceLoading || transportLoading;
+
+  const handleDateRangeChange = (
+    startDate: Date | null,
+    endDate: Date | null,
+  ) => {
+    setDateRange({ start: startDate, end: endDate });
+  };
 
   return (
     <div className="space-y-6">
@@ -146,6 +211,11 @@ const Distributor = () => {
         </Button>
       </div>
 
+      <DateRangeFilter
+        onDateRangeChange={handleDateRangeChange}
+        className="border rounded-lg p-4 bg-card"
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -160,7 +230,7 @@ const Distributor = () => {
           <CardContent>
             {isLoading ? (
               <div className="h-64 flex items-center justify-center">
-                <Loader className="h-8 w-8 animate-spin text-primary" />
+                <LineChartSkeleton />
               </div>
             ) : transportError ? (
               <div className="h-64 flex flex-col items-center justify-center space-y-4">
@@ -229,7 +299,7 @@ const Distributor = () => {
           <CardContent>
             {isLoading ? (
               <div className="h-64 flex items-center justify-center">
-                <Loader className="h-8 w-8 animate-spin text-primary" />
+                <RadarChartSkeleton />
               </div>
             ) : performanceError ? (
               <div className="h-64 flex items-center justify-center">
@@ -285,9 +355,13 @@ const Distributor = () => {
                   Total de Veículos
                 </div>
                 <div className="text-2xl font-bold">
-                  {transportData
-                    .reduce((sum, month) => sum + month.vehicles, 0)
-                    .toLocaleString()}
+                  {isLoading ? (
+                    <Skeleton className="w-16 h-4" />
+                  ) : (
+                    transportData
+                      .reduce((sum, month) => sum + month.vehicles, 0)
+                      .toLocaleString()
+                  )}
                 </div>
               </div>
               <div className="p-4 border rounded-lg space-y-2">
@@ -295,24 +369,43 @@ const Distributor = () => {
                   Média Mensal
                 </div>
                 <div className="text-2xl font-bold">
-                  {Math.round(
-                    transportData.reduce(
-                      (sum, month) => sum + month.vehicles,
-                      0,
-                    ) / transportData.length,
+                  {isLoading ? (
+                    <Skeleton className="w-16 h-4" />
+                  ) : (
+                    Math.round(
+                      transportData.reduce(
+                        (sum, month) => sum + month.vehicles,
+                        0,
+                      ) / transportData.length,
+                    ).toLocaleString()
                   )}
                 </div>
               </div>
               <div className="p-4 border rounded-lg space-y-2">
                 <div className="text-sm text-muted-foreground">Melhor Mês</div>
                 <div className="text-2xl font-bold">
-                  {Math.max(...transportData.map((month) => month.vehicles))}
+                  {isLoading ? (
+                    <Skeleton className="w-16 h-4" />
+                  ) : (
+                    transportData
+                      .reduce((max, month) => Math.max(max, month.vehicles), 0)
+                      .toLocaleString()
+                  )}
                 </div>
               </div>
               <div className="p-4 border rounded-lg space-y-2">
                 <div className="text-sm text-muted-foreground">Pior Mês</div>
                 <div className="text-2xl font-bold">
-                  {Math.min(...transportData.map((month) => month.vehicles))}
+                  {isLoading ? (
+                    <Skeleton className="w-16 h-4" />
+                  ) : (
+                    transportData
+                      .reduce(
+                        (min, month) => Math.min(min, month.vehicles),
+                        Infinity,
+                      )
+                      .toLocaleString()
+                  )}
                 </div>
               </div>
             </div>
@@ -338,7 +431,11 @@ const Distributor = () => {
                   <div className="space-y-1">
                     <div className="font-medium">{item.criteria}</div>
                     <div className="text-sm text-muted-foreground">
-                      {item.score}/{item.maxScore} pontos
+                      {isLoading ? (
+                        <Skeleton className="w-16 h-4" />
+                      ) : (
+                        `${item.score}/${item.maxScore} pontos`
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -351,7 +448,11 @@ const Distributor = () => {
                       />
                     </div>
                     <div className="text-lg font-bold w-12 text-right">
-                      {item.score}%
+                      {isLoading ? (
+                        <Skeleton className="w-12 h-4" />
+                      ) : (
+                        `${item.score}%`
+                      )}
                     </div>
                   </div>
                 </div>

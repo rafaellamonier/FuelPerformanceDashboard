@@ -25,21 +25,66 @@ import {
   useFuelTypeDistribution,
   useUpdateFuelData,
 } from "./queries/gasStationQueries";
+import { DateRangeFilter } from "@/components/DateRangeFilter";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+function BarChartSkeleton() {
+  return (
+    <div className="w-full max-w-xl rounded-xl bg-white space-y-4">
+      {/* Título */}
+      <Skeleton className="h-6 w-1/3" />
+
+      {/* Barras */}
+      <div className="space-y-3 mt-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center space-x-2">
+            <Skeleton className="h-4 w-16 rounded" />
+            <Skeleton className="h-4 flex-1 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PieChartSkeleton() {
+  return (
+    <div className="w-full max-w-sm p-4 rounded-xl bg-white space-y-6">
+      {/* Gráfico circular */}
+      <div className="flex justify-center">
+        <Skeleton className="h-40 w-40 rounded-full" />
+      </div>
+    </div>
+  );
+}
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
 const GasStation = () => {
+  const [dateRange, setDateRange] = useState<{
+    start: Date | null;
+    end: Date | null;
+  }>({
+    start: null,
+    end: null,
+  });
+
   const updateMutation = useUpdateFuelData();
   const {
     data: volumeData,
     isLoading: volumeLoading,
     error: volumeError,
   } = useFuelVolumeByDay();
+
+  const start = dateRange.start || null;
+  const end = dateRange.end || null;
+
   const {
     data: typeData,
     isLoading: typeLoading,
     error: typeError,
-  } = useFuelTypeDistribution();
+  } = useFuelTypeDistribution(start, end);
 
   const handleUpdateData = () => {
     updateMutation.mutate();
@@ -59,6 +104,13 @@ const GasStation = () => {
   }
 
   const isLoading = volumeLoading || typeLoading || updateMutation.isPending;
+
+  const handleDateRangeChange = (
+    startDate: Date | null,
+    endDate: Date | null,
+  ) => {
+    setDateRange({ start: startDate, end: endDate });
+  };
 
   return (
     <div className="space-y-6">
@@ -86,6 +138,11 @@ const GasStation = () => {
         </Button>
       </div>
 
+      <DateRangeFilter
+        onDateRangeChange={handleDateRangeChange}
+        className="border rounded-lg p-4 bg-card"
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -100,7 +157,7 @@ const GasStation = () => {
           <CardContent>
             {isLoading ? (
               <div className="h-64 flex items-center justify-center">
-                <Loader className="h-8 w-8 animate-spin text-primary" />
+                <BarChartSkeleton />
               </div>
             ) : (
               <div className="h-64">
@@ -143,7 +200,7 @@ const GasStation = () => {
           <CardContent>
             {isLoading ? (
               <div className="h-64 flex items-center justify-center">
-                <Loader className="h-8 w-8 animate-spin text-primary" />
+                <PieChartSkeleton />
               </div>
             ) : (
               <div className="h-64">
@@ -206,10 +263,18 @@ const GasStation = () => {
                     <span className="font-medium">{fuel.type}</span>
                   </div>
                   <div className="text-2xl font-bold">
-                    {fuel.volume.toLocaleString()}
+                    {isLoading ? (
+                      <Skeleton className="w-24 h-6" />
+                    ) : (
+                      fuel.volume.toLocaleString()
+                    )}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {fuel.percentage}% do total
+                    {isLoading ? (
+                      <Skeleton className="w-16 h-4" />
+                    ) : (
+                      `${fuel.volume.toLocaleString()}L`
+                    )}
                   </div>
                 </div>
               ))}

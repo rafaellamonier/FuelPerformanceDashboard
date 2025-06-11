@@ -12,10 +12,10 @@ export const useFuelVolumeByDay = () =>
     queryFn: fetchFuelVolumeByDay,
   });
 
-export const useFuelTypeDistribution = () =>
+export const useFuelTypeDistribution = (start: Date | null, end: Date | null) =>
   useQuery({
-    queryKey: ["fuel-type-distribution"],
-    queryFn: fetchFuelTypeDistribution,
+    queryKey: ["fuel-type-distribution", start, end],
+    queryFn: () => fetchFuelTypeDistribution({ start, end }),
   });
 
 export const useUpdateFuelData = () => {
