@@ -35,7 +35,20 @@ export function ExportButton({ data, filename, className }: ExportButtonProps) {
   const exportToXLSX = () => {
     if (!data || data.length === 0) return;
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
+    const worksheet = XLSX.utils.json_to_sheet(
+      data.map((item) => {
+        const typedItem = item as {
+          day?: string;
+          Dia?: string;
+          volume?: number;
+          "Volume (L)"?: number;
+        };
+        return {
+          Dia: typedItem.day || typedItem.Dia,
+          "Volume (L)": typedItem.volume || typedItem["Volume (L)"],
+        };
+      }),
+    );
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Dados");
 
